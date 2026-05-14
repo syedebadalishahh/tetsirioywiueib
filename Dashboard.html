@@ -16,11 +16,9 @@
         .input-vip:focus { border-color: var(--primary); outline: none; }
         .neon-glow { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hidden { display: none !important; }
-        
         .result-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 12px 0; display: flex; justify-content: space-between; align-items: center; }
         .result-label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
         .result-value { font-size: 12px; font-weight: 600; color: #f8fafc; text-align: right; }
-        
         .overlay-gate { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.98); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .red-alert-bar { background: linear-gradient(90deg, #ef4444, #991b1b); }
     </style>
@@ -29,15 +27,14 @@
     <div class="mesh-bg"></div>
 
     <div id="red-alert" class="red-alert-bar w-full py-3 px-6 text-center text-xs font-black uppercase tracking-[0.2em] hidden">
-        ⚠️ ALERT: Recent payment declined. Contact Support (+92 300 0000000) immediately.
+        ⚠️ ALERT: Recent payment declined. Contact Support immediately.
     </div>
 
     <div id="blocked-gate" class="overlay-gate hidden">
         <div class="glass-card p-10 rounded-[3rem] border-red-500 max-w-sm text-center">
             <div class="text-5xl mb-6">🔒</div>
             <h2 class="text-2xl font-black mb-4">ACCESS DENIED</h2>
-            <p class="text-slate-400 text-sm leading-relaxed mb-8">You have been blocked by the Administrator for suspicious or illegal activity. Please contact support to appeal.</p>
-            <p class="text-red-400 font-bold text-sm">+92 300 0000000</p>
+            <p class="text-slate-400 text-sm leading-relaxed mb-8">You have been blocked by the Administrator for suspicious activity.</p>
         </div>
     </div>
 
@@ -99,7 +96,11 @@
                 </div>
             </div>
             
-            <div id="capture-area" class="bg-slate-900/50 p-4 rounded-2xl">
+            <div id="capture-area" class="bg-slate-900/50 p-6 rounded-2xl border border-white/5">
+                <div class="mb-4 pb-4 border-b border-white/10 flex justify-between items-end">
+                    <span class="text-[10px] font-black text-sky-500 tracking-widest uppercase">ACFSPY Verified Intel</span>
+                    <span id="export-date" class="text-[8px] text-slate-500 font-mono"></span>
+                </div>
                 <div id="api-data-list" class="space-y-1"></div>
             </div>
 
@@ -112,7 +113,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, set, update, push } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+        import { getDatabase, ref, onValue, update, push } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
         const firebaseConfig = { apiKey: "AIzaSyB2baX4LFFMucP3hiCPpNX62rWI4NVjeSE", authDomain: "talibeilm-de293.firebaseapp.com", databaseURL: "https://talibeilm-de293-default-rtdb.firebaseio.com", projectId: "talibeilm-de293" };
         const app = initializeApp(firebaseConfig);
@@ -175,17 +176,18 @@
 
             if (!sid || !target) return alert("Fill all fields.");
             const service = servicesData[sid];
-            if (userData.credits < service.credits) return alert("Insufficient 💎. Top-up required.");
+            if (userData.credits < service.credits) return alert("Insufficient 💎.");
 
-            btn.innerText = "INITIALIZING...";
+            btn.innerText = "PROCESSING...";
             btn.disabled = true;
 
             if (service.apiEnabled && service.apiUrl) {
                 try {
-                    const response = await fetch(service.apiUrl + target);
+                    const finalUrl = service.apiUrl + target;
+                    const response = await fetch(finalUrl);
                     const result = await response.json();
 
-                    if (result.success && result.data && result.data.length > 0) {
+                    if (result && Object.keys(result).length > 0) {
                         const newCredits = userData.credits - service.credits;
                         await update(ref(db, 'users/' + currentUser.uid), { credits: newCredits });
 
@@ -197,24 +199,27 @@
 
                         const list = document.getElementById('api-data-list');
                         list.innerHTML = "";
-                        const dataObj = result.data[0];
+                        document.getElementById('export-date').innerText = new Date().toLocaleString();
+                        
+                        // Universal Parser
+                        const dataObj = Array.isArray(result) ? result[0] : (result.data ? (Array.isArray(result.data) ? result.data[0] : result.data) : result);
+
                         for (let key in dataObj) {
-                            list.innerHTML += `<div class="result-item"><span class="result-label">${key.replace(/_/g, ' ')}</span><span class="result-value">${dataObj[key] || 'N/A'}</span></div>`;
+                            if (typeof dataObj[key] !== 'object') {
+                                list.innerHTML += `<div class="result-item"><span class="result-label">${key.replace(/_/g, ' ')}</span><span class="result-value text-sky-400">${dataObj[key] || 'N/A'}</span></div>`;
+                            }
                         }
                         
-                        const container = document.getElementById('api-result-container');
-                        container.classList.remove('hidden');
-                        
-                        // Smoothly scroll to results
-                        container.scrollIntoView({ behavior: 'smooth' });
+                        document.getElementById('api-result-container').classList.remove('hidden');
+                        document.getElementById('api-result-container').scrollIntoView({ behavior: 'smooth' });
                     } else {
-                        alert("No results found for this target. No credits deducted.");
+                        alert("No results found.");
                     }
                 } catch (err) {
-                    alert("System Link Failure. Please try again later.");
+                    alert("Link Failure. Ensure CORS is allowed or the API is reachable.");
                 }
             } else {
-                if (!wa) { alert("WhatsApp required for manual delivery."); btn.disabled = false; return; }
+                if (!wa) { alert("WhatsApp required."); btn.disabled = false; return; }
                 const newCredits = userData.credits - service.credits;
                 await update(ref(db, 'users/' + currentUser.uid), { credits: newCredits });
                 await push(ref(db, 'requests/active'), {
@@ -222,7 +227,7 @@
                     service: service.title, target: target, whatsapp: wa,
                     cost: service.credits, timestamp: new Date().toLocaleString(), status: "Pending"
                 });
-                alert("Protocol Initialized. Data will be delivered to WhatsApp.");
+                alert("Protocol Initialized. Delivery via WhatsApp.");
                 window.location.reload();
             }
             btn.innerText = "Process Request";
@@ -230,18 +235,16 @@
         };
 
         window.closeResults = () => {
-            const container = document.getElementById('api-result-container');
-            container.classList.add('hidden');
+            document.getElementById('api-result-container').classList.add('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // DOWNLOAD JPG LOGIC
         document.getElementById('download-jpg').onclick = () => {
             const area = document.getElementById('capture-area');
-            html2canvas(area, { backgroundColor: '#020617', scale: 2 }).then(canvas => {
+            html2canvas(area, { backgroundColor: '#020617', scale: 3 }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `ACFSPY-Result-${Date.now()}.jpg`;
-                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.href = canvas.toDataURL('image/jpeg', 1.0);
                 link.click();
             });
         };
