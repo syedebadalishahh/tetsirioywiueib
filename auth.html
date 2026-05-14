@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACFSPY | Secure Authentication</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #38bdf8; --secondary: #ec4899; --bg: #020617; }
+        body { background-color: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-x: hidden; }
+        .mesh-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.05) 0%, transparent 50%); }
+        .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); width: 100%; max-width: 450px; }
+        .input-auth { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: 0.3s; }
+        .input-auth:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 15px rgba(56, 189, 248, 0.1); }
+        .btn-auth { background: linear-gradient(90deg, var(--primary), #6366f1); transition: 0.3s; font-weight: 800; }
+        .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3); }
+        .hidden { display: none !important; }
+
+        /* Welcome Popup Styles */
+        #welcome-popup { background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px); z-index: 1000; }
+        .floating-diamond { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    </style>
+</head>
+<body>
+    <div class="mesh-bg"></div>
+
+    <div id="welcome-popup" class="fixed inset-0 hidden flex items-center justify-center p-6">
+        <div class="glass-card p-10 rounded-[3rem] border-sky-500 text-center shadow-[0_0_50px_rgba(56,189,248,0.2)]">
+            <div class="text-6xl mb-6 floating-diamond">💎</div>
+            <h2 class="text-3xl font-black mb-4 neon-text">Welcome Agent!</h2>
+            <p class="text-slate-400 text-sm leading-relaxed mb-8">
+                As a new member of the ACFSPY Network, we have credited your vault with <br>
+                <span class="text-sky-400 font-bold text-lg">10 FREE CREDITS</span> to start your first investigation.
+            </p>
+            <button onclick="window.location.href='dashboard.html'" class="btn-auth w-full py-4 rounded-2xl text-white uppercase tracking-widest text-xs">Enter Terminal</button>
+        </div>
+    </div>
+
+    <div id="auth-container" class="glass-card p-10 rounded-[2.5rem] shadow-2xl">
+        <div class="text-center mb-8">
+            <h1 id="auth-title" class="text-3xl font-black tracking-tighter">AGENT LOGIN</h1>
+            <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mt-2">Precision Intelligence Access</p>
+        </div>
+
+        <div class="bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl mb-8 text-[9px] text-amber-200 leading-relaxed uppercase tracking-wider">
+            <span class="font-black text-amber-500">Notice:</span> Involvement in illegal activity will result in an immediate blacklist and authority reporting.
+        </div>
+
+        <div class="space-y-4">
+            <div id="name-field" class="hidden">
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 px-1">Display Name</label>
+                <input type="text" id="user-name" placeholder="Agent 007" class="input-auth w-full p-4 rounded-2xl">
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 px-1">Network Email</label>
+                <input type="email" id="user-email" placeholder="agent@acfspy.net" class="input-auth w-full p-4 rounded-2xl">
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 px-1">Access Cipher</label>
+                <input type="password" id="user-pass" placeholder="••••••••" class="input-auth w-full p-4 rounded-2xl">
+            </div>
+
+            <button id="auth-btn" class="btn-auth w-full py-5 rounded-2xl text-white uppercase tracking-widest text-sm mt-4">Initialize Login</button>
+            
+            <p id="toggle-msg" class="text-center text-xs text-slate-500 mt-6 font-semibold">
+                New Agent? <span id="toggle-auth" class="text-sky-400 cursor-pointer hover:underline">Apply for Identity</span>
+            </p>
+        </div>
+        
+        <p id="status-msg" class="text-center text-xs font-bold mt-4 h-4"></p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+        import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2baX4LFFMucP3hiCPpNX62rWI4NVjeSE",
+            authDomain: "talibeilm-de293.firebaseapp.com",
+            databaseURL: "https://talibeilm-de293-default-rtdb.firebaseio.com",
+            projectId: "talibeilm-de293",
+            storageBucket: "talibeilm-de293.firebasestorage.app",
+            messagingSenderId: "844452125022",
+            appId: "1:844452125022:web:d304584fc57062f67a97cf",
+            measurementId: "G-40ZMVLKF63"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let isLogin = true;
+
+        async function logEvent(type, details) {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const ipData = await res.json();
+                push(ref(db, 'logs'), {
+                    event: type,
+                    ip: ipData.ip,
+                    details: details,
+                    timestamp: new Date().toLocaleString()
+                });
+            } catch(e) {}
+        }
+
+        document.getElementById('toggle-auth').onclick = () => {
+            isLogin = !isLogin;
+            document.getElementById('name-field').classList.toggle('hidden', isLogin);
+            document.getElementById('auth-title').innerText = isLogin ? "AGENT LOGIN" : "REGISTER IDENTITY";
+            document.getElementById('auth-btn').innerText = isLogin ? "Initialize Login" : "Create Profile";
+            document.getElementById('toggle-auth').innerText = isLogin ? "Apply for Identity" : "Login Instead";
+        };
+
+        document.getElementById('auth-btn').onclick = async () => {
+            const email = document.getElementById('user-email').value;
+            const pass = document.getElementById('user-pass').value;
+            const name = document.getElementById('user-name').value;
+            const status = document.getElementById('status-msg');
+
+            if (isLogin) {
+                try {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                    await logEvent("Login Attempt", `Success: ${email}`);
+                    window.location.href = "dashboard.html";
+                } catch (err) {
+                    status.innerText = "Error: Invalid Access Cipher";
+                    status.classList.add('text-red-500');
+                    await logEvent("Auth Failure", `Failed Login: ${email}`);
+                    
+                    // Log fail for Admin Stats
+                    push(ref(db, 'auth_failures'), { email, timestamp: new Date().toLocaleString() });
+                }
+            } else {
+                if(!name || !email || !pass) { status.innerText = "Fill all fields"; return; }
+                try {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    const user = res.user;
+
+                    await set(ref(db, 'users/' + user.uid), {
+                        username: name,
+                        email: email,
+                        credits: 10, // FREE GIFT
+                        status: "Inactive", 
+                        registeredAt: new Date().toLocaleString()
+                    });
+
+                    await logEvent("New Registration", `User ${name} joined with 10 Free Credits.`);
+                    
+                    // Show Popup Instead of Redirecting
+                    document.getElementById('auth-container').classList.add('hidden');
+                    document.getElementById('welcome-popup').classList.remove('hidden');
+
+                } catch (err) {
+                    status.innerText = "Error: Email already exists or weak cipher.";
+                    status.classList.add('text-red-500');
+                }
+            }
+        };
+    </script>
+</body>
+</html>

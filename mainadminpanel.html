@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ACFSPY | COMMAND HC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #38bdf8; --bg: #010409; }
+        body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; padding-top: 85px; padding-bottom: 95px; -webkit-tap-highlight-color: transparent; overflow-y: auto !important; height: auto !important; }
+        .glass-panel { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .neon-glow { box-shadow: 0 0 20px rgba(56, 189, 248, 0.15); }
+        header { position: fixed; top: 0; left: 0; right: 0; height: 80px; z-index: 100; background: rgba(1, 4, 9, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; z-index: 100; background: rgba(1, 4, 9, 0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 5px; padding: 0 10px; -webkit-overflow-scrolling: touch; }
+        .bottom-nav::-webkit-scrollbar { display: none; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #4b5563; transition: 0.3s; min-width: 65px; flex: 1; cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item span { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card { background: linear-gradient(145deg, rgba(30,41,59,0.4), rgba(15,23,42,0.4)); border-left: 3px solid var(--primary); }
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        input, textarea { background: rgba(0,0,0,0.4) !important; border: 1px solid rgba(255,255,255,0.1) !important; transition: 0.3s; color: white !important; }
+        input:focus { border-color: var(--primary) !important; outline: none; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="p-6 flex justify-between items-center">
+        <div>
+            <h1 class="text-xl font-black text-sky-400 tracking-tighter">HQ CENTRAL</h1>
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">System Online</span>
+            </div>
+        </div>
+        <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center font-black text-sky-400 text-xs">SA</div>
+    </header>
+
+    <main class="p-4 max-w-5xl mx-auto">
+        
+        <section id="tab-analytics" class="tab-content fade-in space-y-6">
+            <h2 class="text-xs font-black text-slate-500 uppercase tracking-[0.3em]">Business Intelligence</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="stat-card p-5 rounded-2xl border-l-emerald-500"><p class="text-[9px] font-black text-slate-500 uppercase mb-1">Total Revenue</p><p id="an-revenue" class="text-lg font-black text-emerald-400">0 PKR</p></div>
+                <div class="stat-card p-5 rounded-2xl border-l-sky-500"><p class="text-[9px] font-black text-slate-500 uppercase mb-1">Total Agents</p><p id="an-users" class="text-lg font-black text-white">0</p></div>
+                <div class="stat-card p-5 rounded-2xl border-l-amber-500"><p class="text-[9px] font-black text-slate-500 uppercase mb-1">Total Hits</p><p id="an-reqs" class="text-lg font-black text-amber-400">0</p></div>
+                <div class="stat-card p-5 rounded-2xl border-l-red-500"><p class="text-[9px] font-black text-slate-500 uppercase mb-1">Breaches</p><p id="an-fail" class="text-lg font-black text-red-500">0</p></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6 rounded-3xl neon-glow"><h3 class="text-[10px] font-black uppercase text-emerald-400 mb-6">Regional Traffic</h3><div id="country-list" class="space-y-4"></div></div>
+                <div class="glass-panel p-6 rounded-3xl neon-glow"><h3 class="text-[10px] font-black uppercase text-sky-400 mb-6">Service Popularity</h3><div id="popularity-list" class="space-y-4"></div></div>
+            </div>
+        </section>
+
+        <section id="tab-orders" class="tab-content hidden fade-in space-y-4">
+            <h2 class="text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-4">Intel Requests</h2>
+            <div class="flex gap-2 bg-white/5 p-1 rounded-xl mb-4">
+                <button onclick="toggleOrderView('Pending')" id="btn-ord-pending" class="flex-1 py-3 rounded-lg text-[10px] font-black uppercase bg-sky-500 text-white transition-all shadow-lg shadow-sky-500/20">Pending</button>
+                <button onclick="toggleOrderView('Completed')" id="btn-ord-completed" class="flex-1 py-3 rounded-lg text-[10px] font-black uppercase text-slate-400 transition-all">Completed</button>
+            </div>
+            <div id="orders-list" class="space-y-4"></div>
+        </section>
+
+        <section id="tab-users" class="tab-content hidden fade-in space-y-4">
+            <input type="text" id="user-search" oninput="filterUsers()" placeholder="SEARCH AGENT..." class="w-full p-4 rounded-2xl text-[11px] font-bold text-white tracking-widest mb-6">
+            <div id="user-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </section>
+
+        <section id="tab-payments" class="tab-content hidden fade-in space-y-4">
+            <h2 class="text-xs font-black text-slate-500 uppercase tracking-[0.3em]">Top-Up Queue</h2>
+            <div id="payment-cards" class="space-y-3"></div>
+        </section>
+
+        <section id="tab-services" class="tab-content hidden fade-in space-y-4">
+            <button onclick="document.getElementById('svc-modal').classList.remove('hidden')" class="w-full bg-sky-500 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white mb-4">Deploy New Protocol</button>
+            <div id="service-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </section>
+
+        <section id="tab-logs" class="tab-content hidden fade-in space-y-4">
+            <h2 class="text-xs font-black text-slate-500 uppercase tracking-[0.3em]">System Terminal</h2>
+            <div class="glass-panel rounded-2xl p-4 font-mono text-[9px] min-h-[60vh] space-y-2 border-white/5 break-all" id="log-list"></div>
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <button onclick="showTab('analytics', this)" class="nav-item active"><span class="text-xl mb-1">📊</span><span>Stats</span></button>
+        <button onclick="showTab('orders', this)" class="nav-item"><span class="text-xl mb-1">🎯</span><span>Orders</span></button>
+        <button onclick="showTab('users', this)" class="nav-item"><span class="text-xl mb-1">👥</span><span>Users</span></button>
+        <button onclick="showTab('payments', this)" class="nav-item"><span class="text-xl mb-1">💳</span><span>Pay</span></button>
+        <button onclick="showTab('services', this)" class="nav-item"><span class="text-xl mb-1">⚙️</span><span>Services</span></button>
+        <button onclick="showTab('logs', this)" class="nav-item"><span class="text-xl mb-1">🖥️</span><span>Logs</span></button>
+    </nav>
+
+    <div id="coin-modal" class="fixed inset-0 bg-black/95 z-[2000] hidden p-6 flex items-center justify-center">
+        <div class="glass-panel p-8 rounded-[2.5rem] w-full max-w-sm border-sky-500">
+            <h2 class="text-xl font-black mb-2 text-sky-400">EDIT VAULT</h2>
+            <p class="text-[10px] text-slate-400 uppercase mb-6" id="coin-modal-user"></p>
+            <input type="number" id="new-coins" class="w-full p-4 rounded-xl text-lg font-black text-white text-center mb-4">
+            <input type="hidden" id="edit-uid">
+            <button onclick="saveCoins()" class="w-full bg-emerald-500 py-4 rounded-xl text-[10px] font-black uppercase text-white mb-2">Update</button>
+            <button onclick="document.getElementById('coin-modal').classList.add('hidden')" class="w-full text-slate-500 text-[10px] font-bold uppercase">Cancel</button>
+        </div>
+    </div>
+
+    <div id="svc-modal" class="fixed inset-0 bg-black/95 z-[2000] hidden p-6 flex items-center justify-center">
+        <div class="glass-panel p-8 rounded-[2.5rem] w-full max-w-sm border-sky-500">
+            <h2 class="text-xl font-black mb-6 text-sky-400">NEW SERVICE</h2>
+            <input type="text" id="s-title" placeholder="PROTOCOL NAME" class="w-full p-4 rounded-xl text-xs text-white mb-3">
+            <input type="number" id="s-cost" placeholder="CREDIT COST" class="w-full p-4 rounded-xl text-xs text-white mb-3">
+            <textarea id="s-desc" placeholder="DESCRIPTION..." class="w-full p-4 rounded-xl text-xs text-white h-24 mb-4"></textarea>
+            <button onclick="saveSvc()" class="w-full bg-sky-500 py-4 rounded-xl text-[10px] font-black text-white mb-2">Authorize</button>
+            <button onclick="document.getElementById('svc-modal').classList.add('hidden')" class="w-full text-slate-500 text-[10px] font-bold uppercase">Abort</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getDatabase, ref, onValue, update, remove, push } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyB2baX4LFFMucP3hiCPpNX62rWI4NVjeSE", authDomain: "talibeilm-de293.firebaseapp.com", databaseURL: "https://talibeilm-de293-default-rtdb.firebaseio.com", projectId: "talibeilm-de293" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        let allUsers = {}, allOrders = {}, currentOrderView = "Pending";
+
+        window.showTab = (tab, el) => {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            el.classList.add('active');
+            window.scrollTo(0,0);
+        };
+
+        window.toggleOrderView = (view) => {
+            currentOrderView = view;
+            const btnP = document.getElementById('btn-ord-pending'), btnC = document.getElementById('btn-ord-completed');
+            btnP.className = view === 'Pending' ? "flex-1 py-3 rounded-lg text-[10px] font-black uppercase bg-sky-500 text-white shadow-lg shadow-sky-500/20" : "flex-1 py-3 rounded-lg text-[10px] font-black uppercase text-slate-400";
+            btnC.className = view === 'Completed' ? "flex-1 py-3 rounded-lg text-[10px] font-black uppercase bg-emerald-500 text-white shadow-lg shadow-emerald-500/20" : "flex-1 py-3 rounded-lg text-[10px] font-black uppercase text-slate-400";
+            renderOrders();
+        };
+
+        onValue(ref(db, '/'), (snap) => {
+            const data = snap.val() || {};
+            
+            // STATS
+            let rev = 0; Object.values(data.payments || {}).forEach(p => { if(p.status === "Approved") rev += parseInt(p.price || 0); });
+            document.getElementById('an-revenue').innerText = rev + " PKR";
+            document.getElementById('an-users').innerText = Object.keys(data.users || {}).length;
+            document.getElementById('an-reqs').innerText = Object.keys(data.requests?.active || {}).length;
+            document.getElementById('an-fail').innerText = Object.keys(data.auth_failures || {}).length;
+
+            allOrders = data.requests?.active || {}; renderOrders();
+            allUsers = data.users || {}; filterUsers();
+
+            // PAYMENTS
+            const pBox = document.getElementById('payment-cards'); pBox.innerHTML = "";
+            for(let id in data.payments) {
+                if(data.payments[id].status === "Pending") {
+                    pBox.innerHTML += `<div class="glass-panel p-5 rounded-2xl border-l-4 border-l-sky-500"><p class="text-[10px] font-black uppercase">${data.payments[id].email}</p><p class="text-[9px] text-slate-500 font-mono">${data.payments[id].method} | ${data.payments[id].txnId}</p><div class="flex justify-between items-center mt-3"><span class="text-sm font-black text-white">${data.payments[id].credits} 💎</span><div class="flex gap-3"><button onclick="approvePay('${id}', '${data.payments[id].uid}', ${data.payments[id].credits})" class="bg-emerald-500 text-white text-[9px] font-black px-4 py-2 rounded-lg">Verify</button><button onclick="rejectPay('${id}')" class="text-red-500 text-[9px] font-black">Reject</button></div></div></div>`;
+                }
+            }
+
+            // SERVICES
+            const sGrid = document.getElementById('service-cards'); sGrid.innerHTML = "";
+            for(let sid in data.services) { sGrid.innerHTML += `<div class="glass-panel p-5 rounded-2xl relative"><button onclick="deleteSvc('${sid}')" class="absolute top-4 right-4 text-red-500 font-black">X</button><h4 class="text-xs font-black uppercase text-sky-400 mb-1">${data.services[sid].title}</h4><div class="text-[10px] font-black text-white">${data.services[sid].credits} 💎</div></div>`; }
+
+            // LOGS
+            const lBox = document.getElementById('log-list'); lBox.innerHTML = "";
+            Object.values(data.logs || {}).reverse().slice(0, 50).forEach(l => { lBox.innerHTML += `<div class="pb-2 border-b border-white/5 opacity-80"><span class="text-slate-600">[${l.timestamp}]</span> <b class="text-sky-400">${l.event}</b>: ${l.details}</div>`; });
+        });
+
+        // FIXED ORDER RENDERING (Matches your Dashboard logic)
+        window.renderOrders = () => {
+            const list = document.getElementById('orders-list'); list.innerHTML = "";
+            for(let id in allOrders) {
+                const o = allOrders[id];
+                if((o.status || 'Pending') === currentOrderView) {
+                    list.innerHTML += `
+                        <div class="glass-panel p-5 rounded-2xl">
+                            <div class="flex justify-between border-b border-white/5 pb-3 mb-3">
+                                <div>
+                                    <span class="text-[8px] bg-white/10 px-2 py-1 rounded text-sky-400 font-bold uppercase">${o.service}</span>
+                                    <p class="text-[10px] font-black mt-2 text-white uppercase">${o.username || 'Unknown'}</p>
+                                </div>
+                                <span class="text-sm font-black text-sky-400">${o.cost || 0} 💎</span>
+                            </div>
+                            <div class="space-y-1 mb-4">
+                                <p class="text-[9px] text-slate-400">Target: <span class="text-white font-mono font-bold">${o.target || 'N/A'}</span></p>
+                                <p class="text-[9px] text-slate-400">Deliver To: <span class="text-emerald-400 font-mono font-bold">${o.whatsapp || 'N/A'}</span></p>
+                                <p class="text-[9px] text-slate-400">Email: <span class="text-white font-bold">${o.email || 'N/A'}</span></p>
+                                <p class="text-[8px] text-slate-600">${o.timestamp || ''}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                ${currentOrderView === 'Pending' ? `<button onclick="markComplete('${id}')" class="flex-1 bg-emerald-500/20 text-emerald-400 py-2 rounded-lg text-[9px] font-black uppercase">Complete</button>` : ''}
+                                <button onclick="deleteOrder('${id}')" class="flex-1 border border-red-500/30 text-red-500 py-2 rounded-lg text-[9px] font-black uppercase">Delete</button>
+                            </div>
+                        </div>`;
+                }
+            }
+        };
+
+        // FIXED USER LIST (RESTORED ALERT TOGGLE)
+        window.filterUsers = () => {
+            const q = document.getElementById('user-search').value.toLowerCase(), grid = document.getElementById('user-cards'); grid.innerHTML = "";
+            for(let id in allUsers) {
+                const u = allUsers[id];
+                if(u.username?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)) {
+                    grid.innerHTML += `
+                        <div class="glass-panel p-5 rounded-3xl">
+                            <div class="flex justify-between mb-4">
+                                <div><p class="text-[11px] font-black uppercase">${u.username}</p><p class="text-[9px] text-slate-500">${u.email}</p></div>
+                                <span class="text-[8px] px-2 py-1 rounded font-bold uppercase ${u.status === 'Blocked' ? 'bg-red-500/20 text-red-500' : 'bg-sky-500/20 text-sky-400'}">${u.status}</span>
+                            </div>
+                            <div class="bg-white/5 p-3 rounded-xl mb-4 border border-white/5 flex justify-between items-center">
+                                <span class="text-[9px] font-black text-slate-500 uppercase">Balance</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-black text-sky-400">${u.credits || 0} 💎</span>
+                                    <button onclick="openCoinEditor('${id}', '${u.username}', ${u.credits || 0})" class="bg-sky-500 text-white w-6 h-6 rounded flex items-center justify-center font-bold text-xs">+</button>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="toggleUser('${id}', '${u.status}')" class="flex-1 bg-white/5 py-3 rounded-xl text-[9px] font-black uppercase">${u.status === 'Blocked' ? 'Unblock' : 'Block'}</button>
+                                <button onclick="toggleAlert('${id}', '${u.alert}')" class="flex-1 border ${u.alert === 'Red' ? 'border-emerald-500/30 text-emerald-500' : 'border-amber-500/30 text-amber-500'} py-3 rounded-xl text-[9px] font-black uppercase">${u.alert === 'Red' ? 'Clear Alert' : 'Alert'}</button>
+                            </div>
+                        </div>`;
+                }
+            }
+        };
+
+        window.openCoinEditor = (uid, name, cur) => { document.getElementById('edit-uid').value = uid; document.getElementById('coin-modal-user').innerText = name; document.getElementById('new-coins').value = cur; document.getElementById('coin-modal').classList.remove('hidden'); };
+        window.saveCoins = () => { const uid = document.getElementById('edit-uid').value, n = parseInt(document.getElementById('new-coins').value); update(ref(db, `users/${uid}`), { credits: n }); document.getElementById('coin-modal').classList.add('hidden'); };
+        window.markComplete = oid => update(ref(db, `requests/active/${oid}`), { status: 'Completed' });
+        window.deleteOrder = oid => remove(ref(db, `requests/active/${oid}`));
+        window.approvePay = (pid, uid, creds) => { onValue(ref(db, `users/${uid}/credits`), snap => { const cur = snap.val() || 0; update(ref(db, `users/${uid}`), { credits: cur + creds }); update(ref(db, `payments/${pid}`), { status: "Approved" }); }, { onlyOnce: true }); };
+        window.rejectPay = pid => update(ref(db, `payments/${pid}`), { status: "Rejected" });
+        window.toggleUser = (uid, cur) => update(ref(db, `users/${uid}`), { status: cur === 'Blocked' ? 'Active' : 'Blocked' });
+        window.toggleAlert = (uid, cur) => update(ref(db, `users/${uid}`), { alert: cur === 'Red' ? 'None' : 'Red' });
+        window.deleteSvc = sid => remove(ref(db, `services/${sid}`));
+        window.saveSvc = () => { const t = document.getElementById('s-title').value, c = document.getElementById('s-cost').value, d = document.getElementById('s-desc').value; if(t && c) { push(ref(db, 'services'), { title: t, credits: parseInt(c), description: d, status: "active" }); document.getElementById('svc-modal').classList.add('hidden'); } };
+    </script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACFSPY | Command Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #38bdf8; --secondary: #ec4899; --bg: #020617; }
+        body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; scroll-behavior: smooth; }
+        .mesh-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 10%, #0f172a 0%, #020617 100%); }
+        .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .input-vip { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: 0.3s; }
+        .input-vip:focus { border-color: var(--primary); outline: none; }
+        .neon-glow { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hidden { display: none !important; }
+        
+        .result-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 12px 0; display: flex; justify-content: space-between; align-items: center; }
+        .result-label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        .result-value { font-size: 12px; font-weight: 600; color: #f8fafc; text-align: right; }
+        
+        .overlay-gate { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.98); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .red-alert-bar { background: linear-gradient(90deg, #ef4444, #991b1b); }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="mesh-bg"></div>
+
+    <div id="red-alert" class="red-alert-bar w-full py-3 px-6 text-center text-xs font-black uppercase tracking-[0.2em] hidden">
+        ⚠️ ALERT: Recent payment declined. Contact Support (+92 300 0000000) immediately.
+    </div>
+
+    <div id="blocked-gate" class="overlay-gate hidden">
+        <div class="glass-card p-10 rounded-[3rem] border-red-500 max-w-sm text-center">
+            <div class="text-5xl mb-6">🔒</div>
+            <h2 class="text-2xl font-black mb-4">ACCESS DENIED</h2>
+            <p class="text-slate-400 text-sm leading-relaxed mb-8">You have been blocked by the Administrator for suspicious or illegal activity. Please contact support to appeal.</p>
+            <p class="text-red-400 font-bold text-sm">+92 300 0000000</p>
+        </div>
+    </div>
+
+    <nav class="glass-card sticky top-0 z-50 px-6 py-4 mb-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-xl font-black neon-glow uppercase">ACFSPY Terminal</div>
+            <div class="flex items-center gap-4">
+                <a href="top-up.html" class="px-4 py-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-black uppercase tracking-widest">Top-Up 💎</a>
+                <button id="logout-btn" class="text-[10px] font-black text-slate-500 hover:text-white uppercase tracking-widest">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 max-w-4xl pb-20">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+            <div>
+                <h1 class="text-3xl font-black">Agent: <span id="user-display-name" class="neon-glow">...</span></h1>
+                <p id="today-date" class="text-slate-500 text-sm font-bold uppercase mt-1"></p>
+            </div>
+            <div class="glass-card px-8 py-4 rounded-3xl text-center">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Balance</p>
+                <p class="text-3xl font-black"><span id="user-credits">0</span> 💎</p>
+            </div>
+        </div>
+
+        <div class="glass-card p-8 rounded-[2.5rem] shadow-2xl mb-10">
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Target Identification (SNSS/Number)</label>
+                    <input type="text" id="target-data" placeholder="Paste data here..." class="input-vip w-full p-5 rounded-2xl">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Intelligence Protocol</label>
+                    <select id="service-select" class="input-vip w-full p-5 rounded-2xl appearance-none cursor-pointer">
+                        <option value="" disabled selected>Select dynamic service...</option>
+                    </select>
+                </div>
+
+                <div id="service-description" class="p-4 bg-white/5 rounded-2xl text-xs text-slate-400 italic hidden"></div>
+
+                <div id="whatsapp-input-container">
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">WhatsApp for delivery</label>
+                    <input type="text" id="whatsapp-num" placeholder="+92 ..." class="input-vip w-full p-5 rounded-2xl">
+                </div>
+
+                <button id="submit-request" class="w-full p-6 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-black uppercase tracking-[0.2em] shadow-xl hover:scale-[1.01] active:scale-95 transition-all">
+                    Process Request
+                </button>
+            </div>
+        </div>
+
+        <div id="api-result-container" class="hidden glass-card p-8 rounded-[2.5rem] shadow-2xl border-sky-500/50 mb-10">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-black uppercase neon-glow">Intelligence Found</h2>
+                <div class="flex gap-4 items-center">
+                    <button id="download-jpg" class="text-sky-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-1">Download 📸</button>
+                    <button onclick="closeResults()" class="w-8 h-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-black">✕</button>
+                </div>
+            </div>
+            
+            <div id="capture-area" class="bg-slate-900/50 p-4 rounded-2xl">
+                <div id="api-data-list" class="space-y-1"></div>
+            </div>
+
+            <div class="mt-8 p-4 bg-sky-500/10 border border-sky-500/20 rounded-2xl text-center">
+                <p class="text-[9px] text-sky-400 font-black uppercase">Data extraction successful. Credits deducted.</p>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, set, update, push } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyB2baX4LFFMucP3hiCPpNX62rWI4NVjeSE", authDomain: "talibeilm-de293.firebaseapp.com", databaseURL: "https://talibeilm-de293-default-rtdb.firebaseio.com", projectId: "talibeilm-de293" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let userData = null;
+        let servicesData = {};
+
+        document.getElementById('today-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' });
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.href = "auth.html"; } 
+            else {
+                currentUser = user;
+                onValue(ref(db, 'users/' + user.uid), (snapshot) => {
+                    userData = snapshot.val();
+                    if (userData) {
+                        if (userData.status === "Blocked") { document.getElementById('blocked-gate').classList.remove('hidden'); return; }
+                        if (userData.alert === "Red") { document.getElementById('red-alert').classList.remove('hidden'); }
+                        document.getElementById('user-credits').innerText = userData.credits || 0;
+                        document.getElementById('user-display-name').innerText = userData.username;
+                    }
+                });
+                loadServices();
+            }
+        });
+
+        function loadServices() {
+            onValue(ref(db, 'services'), (snapshot) => {
+                const data = snapshot.val();
+                const select = document.getElementById('service-select');
+                const descBox = document.getElementById('service-description');
+                select.innerHTML = '<option value="" disabled selected>Select protocol...</option>';
+                servicesData = data;
+                for (let id in data) {
+                    if (data[id].status === "active") {
+                        const opt = document.createElement('option');
+                        opt.value = id;
+                        opt.textContent = `${data[id].title} (${data[id].credits} 💎)`;
+                        select.appendChild(opt);
+                    }
+                }
+                select.onchange = (e) => {
+                    const s = servicesData[e.target.value];
+                    descBox.innerText = s.description;
+                    descBox.classList.remove('hidden');
+                    if(s.apiEnabled) document.getElementById('whatsapp-input-container').classList.add('hidden');
+                    else document.getElementById('whatsapp-input-container').classList.remove('hidden');
+                };
+            });
+        }
+
+        document.getElementById('submit-request').onclick = async () => {
+            const sid = document.getElementById('service-select').value;
+            const target = document.getElementById('target-data').value;
+            const wa = document.getElementById('whatsapp-num').value;
+            const btn = document.getElementById('submit-request');
+
+            if (!sid || !target) return alert("Fill all fields.");
+            const service = servicesData[sid];
+            if (userData.credits < service.credits) return alert("Insufficient 💎. Top-up required.");
+
+            btn.innerText = "INITIALIZING...";
+            btn.disabled = true;
+
+            if (service.apiEnabled && service.apiUrl) {
+                try {
+                    const response = await fetch(service.apiUrl + target);
+                    const result = await response.json();
+
+                    if (result.success && result.data && result.data.length > 0) {
+                        const newCredits = userData.credits - service.credits;
+                        await update(ref(db, 'users/' + currentUser.uid), { credits: newCredits });
+
+                        push(ref(db, 'requests/active'), {
+                            uid: currentUser.uid, username: userData.username, email: userData.email,
+                            service: service.title, target: target, whatsapp: "API_AUTO",
+                            cost: service.credits, timestamp: new Date().toLocaleString(), status: "Completed"
+                        });
+
+                        const list = document.getElementById('api-data-list');
+                        list.innerHTML = "";
+                        const dataObj = result.data[0];
+                        for (let key in dataObj) {
+                            list.innerHTML += `<div class="result-item"><span class="result-label">${key.replace(/_/g, ' ')}</span><span class="result-value">${dataObj[key] || 'N/A'}</span></div>`;
+                        }
+                        
+                        const container = document.getElementById('api-result-container');
+                        container.classList.remove('hidden');
+                        
+                        // Smoothly scroll to results
+                        container.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert("No results found for this target. No credits deducted.");
+                    }
+                } catch (err) {
+                    alert("System Link Failure. Please try again later.");
+                }
+            } else {
+                if (!wa) { alert("WhatsApp required for manual delivery."); btn.disabled = false; return; }
+                const newCredits = userData.credits - service.credits;
+                await update(ref(db, 'users/' + currentUser.uid), { credits: newCredits });
+                await push(ref(db, 'requests/active'), {
+                    uid: currentUser.uid, username: userData.username, email: userData.email,
+                    service: service.title, target: target, whatsapp: wa,
+                    cost: service.credits, timestamp: new Date().toLocaleString(), status: "Pending"
+                });
+                alert("Protocol Initialized. Data will be delivered to WhatsApp.");
+                window.location.reload();
+            }
+            btn.innerText = "Process Request";
+            btn.disabled = false;
+        };
+
+        window.closeResults = () => {
+            const container = document.getElementById('api-result-container');
+            container.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // DOWNLOAD JPG LOGIC
+        document.getElementById('download-jpg').onclick = () => {
+            const area = document.getElementById('capture-area');
+            html2canvas(area, { backgroundColor: '#020617', scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `ACFSPY-Result-${Date.now()}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+            });
+        };
+
+        document.getElementById('logout-btn').onclick = () => signOut(auth);
+    </script>
+</body>
+</html>
