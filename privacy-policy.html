@@ -1,0 +1,113 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | ACFSPY Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #38bdf8; --secondary: #ec4899; --bg: #020617; }
+        body { 
+            background-color: var(--bg); 
+            color: #f8fafc; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            line-height: 1.7;
+        }
+        .mesh-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
+            background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.08) 0%, transparent 40%); 
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 2rem;
+        }
+        .neon-border {
+            border-left: 4px solid var(--primary);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="mesh-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 bg-slate-950/50 backdrop-blur-md border-b border-white/5">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-black tracking-tighter gradient-text">ACFSPY</a>
+            <a href="index.html" class="text-sm font-bold text-slate-400 hover:text-white transition">Back to Terminal</a>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-20 px-6">
+        <div class="container mx-auto max-w-4xl">
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-6xl font-black mb-4">Privacy & Data <br><span class="gradient-text">Governance</span></h1>
+                <p class="text-slate-500 font-bold uppercase tracking-[0.3em] text-xs">Last Updated: May 2026</p>
+            </div>
+
+            <div class="glass-card p-8 md:p-12 space-y-10">
+                
+                <!-- Section 1 -->
+                <section class="neon-border pl-6">
+                    <h2 class="text-xl font-extrabold text-white mb-3 uppercase tracking-tight">1. Data Ownership Statement</h2>
+                    <p class="text-slate-400">
+                        ACFSPY is a <span class="text-sky-400 font-bold">real-time data delivery interface</span>. We do not own, create, or maintain the records accessed through our platform. All data is fetched dynamically from external third-party APIs. We serve as a medium for data viewing and do not claim intellectual or legal ownership over the information retrieved.
+                    </p>
+                </section>
+
+                <!-- Section 2 -->
+                <section class="neon-border pl-6">
+                    <h2 class="text-xl font-extrabold text-white mb-3 uppercase tracking-tight">2. Information Collection</h2>
+                    <p class="text-slate-400">
+                        When using our protocols, we may collect minimal diagnostic information:
+                    </p>
+                    <ul class="list-disc list-inside mt-3 text-slate-500 space-y-2">
+                        <li>System access logs (IP addresses) for security auditing.</li>
+                        <li>Account credit balances and transaction history.</li>
+                        <li>Session cookies to maintain authenticated access.</li>
+                    </ul>
+                </section>
+
+                <!-- Section 3 -->
+                <section class="neon-border pl-6">
+                    <h2 class="text-xl font-extrabold text-white mb-3 uppercase tracking-tight">3. Third-Party API Interaction</h2>
+                    <p class="text-slate-400">
+                        Our services rely on external handshakes with third-party providers. By using ACFSPY, you acknowledge that your queries are transmitted to these external providers. We are <span class="text-white font-bold">not responsible</span> for the privacy practices or data handling protocols of these third-party entities.
+                    </p>
+                </section>
+
+                <!-- Section 4 -->
+                <section class="neon-border pl-6">
+                    <h2 class="text-xl font-extrabold text-white mb-3 uppercase tracking-tight">4. Limitation of Liability</h2>
+                    <div class="bg-red-500/5 border border-red-500/20 p-6 rounded-xl italic text-sm text-slate-300">
+                        "ACFSPY, its operators, and its developers shall not be held liable for any legal repercussions, misuse, or damages arising from the use of data fetched via our system. Users are solely responsible for verifying the legal right to access the information they request."
+                    </div>
+                </section>
+
+                <!-- Section 5 -->
+                <section class="neon-border pl-6">
+                    <h2 class="text-xl font-extrabold text-white mb-3 uppercase tracking-tight">5. User Compliance</h2>
+                    <p class="text-slate-400">
+                        Access is granted on the condition that the user will not utilize the platform for illegal tracking, harassment, or unauthorized stalking. ACFSPY reserves the right to terminate access and blacklist identities found in violation of these terms without notice or refund.
+                    </p>
+                </section>
+
+            </div>
+
+            <footer class="mt-16 text-center">
+                <p class="text-slate-600 text-[10px] font-black uppercase tracking-[0.5em]">&copy; 2026 ACFSPY Intelligence Network</p>
+            </footer>
+        </div>
+    </main>
+</body>
+</html>
