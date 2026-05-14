@@ -3,99 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACFSPY | Elite Intelligence Portal</title>
+    <title>ACFSPY | No. 1 SIM Data & CNIC Intelligence Portal 2026</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="ACFSPY is the leading Elite Intelligence Portal for SIM Data, CNIC Information, and Vehicle Tracking. Get 100% Free SIM Data and Family Tree lookups.">
+    <meta name="keywords" content="ACFSPY, SIM DATA 100% FREE, CNIC SIM DATA, Live Tracker, Pakistan Person Tracker, Vehicle Information, SIM Information System">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #38bdf8; --secondary: #ec4899; --bg: #020617; }
         body { background-color: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
         
+        /* Premium Background Effect */
         .mesh-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
-            background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 40%),
-                        radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%); }
+            background: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 1) 0%, var(--bg) 100%); }
 
-        .glass-nav { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-nav { background: rgba(2, 6, 23, 0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .neon-text { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .btn-premium { background: linear-gradient(90deg, var(--primary), #6366f1); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn-premium:hover { box-shadow: 0 0 30px rgba(56, 189, 248, 0.4); transform: translateY(-2px); }
+        .btn-premium { background: linear-gradient(90deg, var(--primary), #6366f1); transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1); position: relative; overflow: hidden; }
+        .btn-premium::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
+        .btn-premium:hover::before { left: 100%; }
+        .btn-premium:hover { transform: scale(1.02); box-shadow: 0 0 40px rgba(56, 189, 248, 0.4); }
 
-        .card-service { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
-        .card-service:hover { border-color: var(--primary); background: rgba(30, 41, 59, 0.6); }
+        .card-service { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.05); transition: 0.5s; backdrop-filter: blur(10px); }
+        .card-service:hover { border-color: var(--primary); transform: translateY(-10px); background: rgba(30, 41, 59, 0.6); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
 
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .live-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+        .promo-badge { background: linear-gradient(45deg, #f59e0b, #ef4444); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        
+        .stat-card { border-left: 2px solid var(--primary); background: linear-gradient(90deg, rgba(56, 189, 248, 0.05), transparent); }
     </style>
 </head>
 <body>
     <div class="mesh-bg"></div>
 
+    <!-- Navigation -->
     <nav class="glass-nav fixed top-0 w-full z-[100] px-6 py-4">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="text-2xl font-black tracking-tighter neon-text">ACFSPY</div>
-            <div class="flex items-center gap-6">
-                <a href="auth.html" class="text-sm font-bold text-slate-400 hover:text-white transition">Sign In</a>
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center font-black text-white">A</div>
+                <div class="text-2xl font-black tracking-tighter neon-text">ACFSPY</div>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-sm font-bold text-slate-400">
+                <a href="#services" class="hover:text-white transition">Databases</a>
+                <a href="#features" class="hover:text-white transition">Technology</a>
+                <a href="#" class="hover:text-white transition">API Access</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="auth.html" class="hidden sm:block text-sm font-bold text-slate-400 hover:text-white transition">Log In</a>
                 <a href="auth.html" class="btn-premium px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest text-white">Join Network</a>
             </div>
         </div>
     </nav>
 
-    <section class="pt-48 pb-20 px-6 text-center">
-        <div class="container mx-auto">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8">
-                <div class="live-dot"></div>
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">System Status: Optimal</span>
+    <!-- Hero Section -->
+    <section class="pt-24 md:pt-32 pb-20 px-6 text-center">
+            <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8">
+                <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-sky-400">Nodes Active: 1,402</span>
             </div>
-            <h1 class="text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-none">
-                Data Fetching <br><span class="neon-text">Redefined.</span>
+            
+            <!-- NEW USER OFFER -->
+            <div class="flex justify-center mb-6">
+                <div class="promo-badge px-6 py-2 rounded-full text-white text-xs font-black uppercase tracking-tighter">
+                    🔥 Exclusive: 10 FREE CREDITS for New Users
+                </div>
+            </div>
+
+            <h1 class="text-5xl md:text-8xl font-black mb-8 tracking-tighter leading-[0.9]">
+                Professional <br><span class="neon-text italic">SIM Data & Intelligence</span>
             </h1>
-            <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-12">
-                Access the most powerful intelligence database. Instant verification, family tracing, and vehicle lookups at your fingertips.
+            
+            <p class="text-slate-400 text-lg md:text-xl max-w-3xl mx-auto mb-12 leading-relaxed">
+                Unlock <strong>100% Accurate SIM Data</strong>, CNIC identification, and family tree records via our encrypted neural network. Precision data fetching for the modern age.
             </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <a href="auth.html" class="btn-premium px-10 py-5 rounded-2xl text-lg font-black shadow-2xl">Get Started</a>
-                <a href="#services" class="px-10 py-5 rounded-2xl bg-white/5 border border-white/10 font-bold hover:bg-white/10 transition">Browse Services</a>
+
+            <div class="flex flex-wrap justify-center gap-6">
+                <a href="auth.html" class="btn-premium px-12 py-6 rounded-2xl text-lg font-black shadow-2xl flex items-center gap-3">
+                    Start Scanning Now <span>→</span>
+                </a>
+                <div class="flex flex-col text-left justify-center">
+                    <span class="text-white font-bold">4.9/5 Rating</span>
+                    <span class="text-slate-500 text-xs">Trusted By Our Members</span>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- SEO Stats Section -->
+    <section id="features" class="py-12 border-y border-white/5 bg-white/[0.02]">
+        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="stat-card p-4">
+                <div class="text-2xl font-black text-white">100% Free</div>
+                <div class="text-xs text-slate-500 uppercase font-bold tracking-widest">Initial Access</div>
+            </div>
+            <div class="stat-card p-4">
+                <div class="text-2xl font-black text-white">Instant</div>
+                <div class="text-xs text-slate-500 uppercase font-bold tracking-widest">Response Time</div>
+            </div>
+            <div class="stat-card p-4">
+                <div class="text-2xl font-black text-white">99.99% Accuracy</div>
+                <div class="text-xs text-slate-500 uppercase font-bold tracking-widest">Database Sync</div>
+            </div>
+            <div class="stat-card p-4">
+                <div class="text-2xl font-black text-white">1K+ Successful</div>
+                <div class="text-xs text-slate-500 uppercase font-bold tracking-widest">Searches Done</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
     <section id="services" class="py-24 px-6">
         <div class="container mx-auto">
-            <div class="flex justify-between items-end mb-16">
-                <div>
-                    <h2 class="text-4xl font-black">Available Protocols</h2>
-                    <p class="text-slate-500 mt-2">All services are fetched live from our master database.</p>
-                </div>
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-black mb-4">Elite Protocols</h2>
+                <p class="text-slate-500 max-w-xl mx-auto">Access data nodes including SIM details, CNIC verification, and geolocation tracking.</p>
             </div>
 
-            <div id="services-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="card-service p-8 rounded-[2rem] animate-pulse">
-                    <div class="w-12 h-12 bg-white/5 rounded-2xl mb-6"></div>
-                    <div class="h-6 bg-white/5 w-3/4 rounded mb-4"></div>
-                    <div class="h-4 bg-white/5 w-1/2 rounded"></div>
+            <div id="services-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Skeleton Loading -->
+                <div class="card-service p-10 rounded-[2.5rem] animate-pulse">
+                    <div class="w-16 h-16 bg-white/5 rounded-2xl mb-8"></div>
+                    <div class="h-8 bg-white/5 w-3/4 rounded-lg mb-4"></div>
+                    <div class="h-4 bg-white/5 w-1/2 rounded-lg"></div>
                 </div>
+                <div class="card-service p-10 rounded-[2.5rem] animate-pulse">
+                    <div class="w-16 h-16 bg-white/5 rounded-2xl mb-8"></div>
+                    <div class="h-8 bg-white/5 w-3/4 rounded-lg mb-4"></div>
+                    <div class="h-4 bg-white/5 w-1/2 rounded-lg"></div>
                 </div>
+                <div class="card-service p-10 rounded-[2.5rem] animate-pulse">
+                    <div class="w-16 h-16 bg-white/5 rounded-2xl mb-8"></div>
+                    <div class="h-8 bg-white/5 w-3/4 rounded-lg mb-4"></div>
+                    <div class="h-4 bg-white/5 w-1/2 rounded-lg"></div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="py-20 px-6 border-t border-white/5 bg-black/20">
-        <div class="container mx-auto max-w-4xl text-center">
-            <div class="text-amber-500 text-2xl mb-4">⚠️</div>
-            <h3 class="text-xl font-bold mb-4">Legal Disclaimer & Terms of Use</h3>
-            <p class="text-slate-500 text-sm leading-relaxed">
-                ACFSPY provides data retrieval services for **Legal and Authorized purposes only**. By accessing this platform, you agree that you will not use the information for any illegal activities, harassment, or unauthorized stalking. Any user found involving in illegal activities will be **Blacklisted** and their identity will be reported to relevant authorities.
-            </p>
+    <!-- Professional Trust Section -->
+    <section class="py-24 px-6 bg-gradient-to-b from-transparent to-black/40">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl font-black mb-6 leading-tight">Why Professional Intelligence <br>Experts Choose ACFSPY</h2>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-4">
+                            <span class="text-sky-400 font-bold">01.</span>
+                            <p class="text-slate-300"><strong>Deep Search:</strong> Our algorithms scan multiple mirrors to find SIM Data others miss.</p>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="text-sky-400 font-bold">02.</span>
+                            <p class="text-slate-300"><strong>CNIC Search:</strong> Full family tree and associated mobile number mapping with 99.9% accuracy.</p>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <span class="text-sky-400 font-bold">03.</span>
+                            <p class="text-slate-300"><strong>Privacy First:</strong> Your searches are end-to-end encrypted and never stored on public logs.</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-sky-500/20 blur-3xl rounded-full"></div>
+                    <div class="relative bg-slate-900 border border-white/10 p-8 rounded-3xl">
+                        <div class="flex justify-between items-center mb-8">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Live Intelligence Feed</span>
+                            <span class="text-[10px] bg-sky-500/10 text-sky-400 px-2 py-1 rounded">Secured</span>
+                        </div>
+                        <div class="space-y-4 font-mono text-[10px]">
+                            <div class="text-sky-400">> Initializing database handshake...</div>
+                            <div class="text-slate-500">> Querying SIM_DATA_MNP... [SUCCESS]</div>
+                            <div class="text-slate-500">> Bypassing proxy nodes... [SUCCESS]</div>
+                            <div class="text-pink-500">> FETCH COMPLETE: 0300******* [DECRYPTED]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+       <!-- START LEGAL DISCLAIMER SNIPPET -->
+<div class="container mx-auto px-6 py-12">
+    <div class="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-slate-900/50 backdrop-blur-md p-8 md:p-12">
+        <!-- Background Decorative Glow -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-sky-500/10 blur-[100px] rounded-full"></div>
+        
+        <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="px-3 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest">
+                    Legal Protocol 00-X
+                </span>
+                <div class="h-[1px] flex-grow bg-white/5"></div>
+            </div>
+
+            <h2 class="text-2xl font-black text-white mb-6 uppercase tracking-tight">
+                Non-Affiliation & <span class="text-sky-400">Liability Waiver</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 text-slate-400 text-sm leading-relaxed font-medium">
+                <p>
+                    <strong class="text-slate-200">Data Source Disclaimer:</strong> ACFSPY operates strictly as a technical interface and middleware aggregator. We <span class="text-white">do not own, manage, host, or maintain</span> the underlying databases or person-identifiable information (PII) accessed through this portal. All data is fetched in real-time via third-party <strong class="text-sky-400">External API Gateways</strong>.
+                </p>
+                <p>
+                    <strong class="text-slate-200">Liability Limitation:</strong> By utilizing this network, the user acknowledges that ACFSPY acts solely as a "conduit" under international safe harbor principles. We are not responsible for the accuracy, legality, or reliability of the information retrieved. Users assume <span class="text-white">100% legal responsibility</span> for how this data is utilized.
+                </p>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-white/5 flex flex-wrap gap-6 items-center justify-between">
+                <div class="flex items-center gap-4 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                    <span>API Handshake: Verified</span>
+                    <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+                    <span>Server: Encrypted</span>
+                </div>
+                <div class="text-[10px] italic text-slate-600">
+                    Subject to Digital Millennium Copyright Act (DMCA) & Local Privacy Laws.
+                </div>
+            </div>
         </div>
+    </div>
+</div>
+
+<style>
+    /* Ensures the snippet stays within your site's professional theme */
+    .backdrop-blur-md {
+        box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+    }
+    strong {
+        letter-spacing: -0.01em;
+    }
+</style>
+<!-- END LEGAL DISCLAIMER SNIPPET -->
+ </div>
     </section>
 
-    <footer class="py-12 text-center border-t border-white/5 text-slate-600 text-[10px] font-bold uppercase tracking-[0.4em]">
-        &copy; 2026 ACFSPY Network | Precision Intelligence
+    <!-- Footer & Disclaimer -->
+    <footer class="py-20 px-6 border-t border-white/5">
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-3 gap-12 mb-16">
+                <div class="col-span-2">
+                    <div class="text-amber-500 text-3xl mb-4">⚠️</div>
+                    <h3 class="text-xl font-bold mb-4">Compliance & Legal Protocol</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed max-w-2xl">
+                        ACFSPY operates as a data aggregation tool for authorized investigative purposes. Use of this portal for harassment, illegal tracking, or stalking is strictly prohibited. Users are responsible for local legal compliance. Our system automatically logs IP addresses for security auditing.
+                    </p>
+                </div>
+                <div class="flex flex-col gap-4 text-right">
+                    <h4 class="text-white font-bold">Network Links</h4>
+                    <a href="privacy-policy.html" class="text-slate-500 hover:text-sky-400 transition text-sm">Privacy Policy</a>
+                         </div>
+            </div>
+            <div class="pt-8 border-t border-white/5 text-center">
+                <div class="text-slate-600 text-[10px] font-bold uppercase tracking-[0.6em]">
+                    &copy; 2026 ACFSPY MASTER NETWORK | ALL RIGHTS RESERVED
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-        import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
+        // Your Config (Kept same)
         const firebaseConfig = {
             apiKey: "AIzaSyB2baX4LFFMucP3hiCPpNX62rWI4NVjeSE",
             authDomain: "talibeilm-de293.firebaseapp.com",
@@ -110,48 +280,50 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // LOGGING SYSTEM: Track visitor
+        // Visitor Logging
         async function logVisit() {
             try {
                 const res = await fetch('https://api.ipify.org?format=json');
                 const ipData = await res.json();
-                const logRef = ref(db, 'logs');
-                push(logRef, {
-                    event: "Page Visit: Index",
+                push(ref(db, 'logs'), {
+                    event: "Enhanced Index Visit",
                     ip: ipData.ip,
-                    timestamp: new Date().toLocaleString(),
-                    details: "Unauthenticated visitor landed on Home"
+                    timestamp: new Date().toLocaleString()
                 });
-            } catch(e) { console.log("Log failed"); }
+            } catch(e) {}
         }
         logVisit();
 
-        // DYNAMIC SERVICES FETCH
-        const servicesRef = ref(db, 'services');
-        onValue(servicesRef, (snapshot) => {
+        // Dynamic Services
+        onValue(ref(db, 'services'), (snapshot) => {
             const data = snapshot.val();
             const container = document.getElementById('services-container');
-            container.innerHTML = ''; // Clear loading state
+            container.innerHTML = ''; 
 
             if(!data) {
-                container.innerHTML = '<p class="text-slate-500 italic">No services currently enabled by Admin.</p>';
+                container.innerHTML = '<p class="text-slate-500 italic col-span-full text-center">Systems Offline. Check back soon.</p>';
                 return;
             }
 
             for(let id in data) {
                 const s = data[id];
-                if(s.status === "disabled") continue; // Support for the Admin Enable/Disable toggle
+                if(s.status === "disabled") continue;
 
                 container.innerHTML += `
-                    <div class="card-service p-8 rounded-[2rem] flex flex-col justify-between">
+                    <div class="card-service p-10 rounded-[2.5rem] flex flex-col justify-between group">
                         <div>
-                            <div class="text-3xl mb-6">⚡</div>
-                            <h3 class="text-xl font-bold mb-2">${s.title}</h3>
-                            <p class="text-slate-500 text-sm mb-6">${s.description}</p>
+                            <div class="w-14 h-14 bg-sky-500/10 rounded-2xl flex items-center justify-center text-2xl mb-8 group-hover:scale-110 transition">⚡</div>
+                            <h3 class="text-2xl font-extrabold mb-3 group-hover:text-sky-400 transition">${s.title}</h3>
+                            <p class="text-slate-400 text-sm mb-8 leading-relaxed">${s.description}</p>
                         </div>
-                        <div class="flex justify-between items-center border-t border-white/5 pt-6">
-                            <span class="text-sky-400 font-black">${s.credits} 💎</span>
-                            <a href="auth.html" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition">Access Service</a>
+                        <div class="flex justify-between items-center border-t border-white/10 pt-8">
+                            <div>
+                                <span class="block text-[10px] text-slate-500 uppercase font-black tracking-widest">Access Cost</span>
+                                <span class="text-xl text-white font-black">${s.credits} <span class="text-sky-400 text-sm">Credits</span></span>
+                            </div>
+                            <a href="auth.html" class="bg-white/5 hover:bg-white/10 p-4 rounded-xl transition">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </a>
                         </div>
                     </div>
                 `;
